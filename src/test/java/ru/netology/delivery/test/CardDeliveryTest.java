@@ -1,26 +1,43 @@
 package ru.netology.delivery.test;
 
 import com.codeborne.selenide.Selectors;
+import io.qameta.allure.Allure;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.OutputType;
 import ru.netology.delivery.data.DataGenerator;
 
+import java.io.ByteArrayInputStream;
 import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
 import static org.openqa.selenium.Keys.*;
+
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
 
 
 public class CardDeliveryTest {
 
+    @BeforeAll
+    static void setup() {
+        SelenideLogger.addListener(
+                "AllureSelenide",
+                new AllureSelenide()
+                        .screenshots(true)
+                        .savePageSource(true)
+        );
+    }
+
     @BeforeEach
-    void setup() {
+    void openApp() {
         open("http://localhost:9999");
     }
+
 
     @Test
     @DisplayName("Should successful plan and replan meeting")
@@ -48,6 +65,13 @@ public class CardDeliveryTest {
                 .shouldHave(exactText("Встреча успешно запланирована на " + firstMeetingDate))
                 .shouldBe(visible);
 
+        Allure.addAttachment(
+                "successful-plan",
+                "image/png",
+                new ByteArrayInputStream(screenshot(OutputType.BYTES)),
+                "png"
+        );
+
         $("[data-test-id=date] input").press(SHIFT, HOME, BACK_SPACE);
         $("[data-test-id=date] input").setValue(secondMeetingDate);
         $(Selectors.byText("Запланировать")).click();
@@ -61,5 +85,13 @@ public class CardDeliveryTest {
         $("[data-test-id=success-notification] .notification__content").shouldHave(
                         exactText("Встреча успешно запланирована на " + secondMeetingDate))
                 .shouldBe(visible);
+
+        Allure.addAttachment(
+                "successful-replan",
+                "image/png",
+                new ByteArrayInputStream(screenshot(OutputType.BYTES)),
+                "png"
+        );
+
     }
 }
