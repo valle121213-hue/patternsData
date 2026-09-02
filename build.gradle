@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version '2.11.2'
 }
 
 group 'ru.netology'
@@ -19,9 +20,13 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testImplementation 'com.codeborne:selenide:6.19.1'
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
+
     testCompileOnly 'org.projectlombok:lombok:1.18.36'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+
     testImplementation 'org.slf4j:slf4j-simple:2.0.3'
+
+    testImplementation 'io.qameta.allure:allure-junit5:2.29.0'
 }
 
 test {
